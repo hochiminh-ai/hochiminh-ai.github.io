@@ -10,7 +10,6 @@
   "dependencies": {
     "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
-    "cloudinary": "^2.9.0",
     "eslint-config-next": "^16.2.1",
     "framer-motion": "^12.38.0",
     "next": "latest",

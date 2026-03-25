@@ -1,12 +1,12 @@
 # Ho Chi Minh Photo Gallery
 
-This project now uses a static-export + client-side data model so it can be deployed to Cloudflare Pages.
+This project uses static export with build-time image manifest generation from local files, so it can be deployed to Cloudflare Pages.
 
 ## Architecture
 
 - Next.js static export (output in out/)
-- Client-side photo loading from public/photos-manifest.json
-- Build-time manifest generation from Cloudinary (scripts/generate-photos-manifest.mjs)
+- Build-time page data from public/photos-manifest.json
+- Build-time manifest generation from local files in public/photo (scripts/generate-photos-manifest.mjs)
 
 At runtime, Cloudflare only serves static files. No Next.js server is required.
 
@@ -30,21 +30,12 @@ npm run dev
 npm run build
 ```
 
-## Required environment variables
+## Image source
 
-Set these in your local .env.local and in Cloudflare Pages project settings:
+Put your images in public/photo.
 
-- NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-- CLOUDINARY_API_KEY
-- CLOUDINARY_API_SECRET
-- CLOUDINARY_FOLDER
-
-Notes:
-
-- NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is public and used in browser image URLs.
-- CLOUDINARY_API_KEY / CLOUDINARY_API_SECRET / CLOUDINARY_FOLDER are used only at build time to generate public/photos-manifest.json.
-
-If build-time Cloudinary env vars are missing, the prebuild script writes an empty manifest.
+- Supported extensions: .png, .jpg, .jpeg, .webp, .avif
+- Manifest file public/photos-manifest.json is generated automatically on npm run build
 
 ## Cloudflare Pages deployment
 

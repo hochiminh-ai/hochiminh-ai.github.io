@@ -1,9 +1,9 @@
 export interface ImageProps {
   id: number;
-  height: string;
-  width: string;
-  public_id: string;
-  format: string;
+  src: string;
+  name: string;
+  width: number;
+  height: number;
   blurDataUrl?: string;
 }
 

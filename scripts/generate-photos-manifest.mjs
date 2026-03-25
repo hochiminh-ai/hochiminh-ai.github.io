@@ -1,8 +1,34 @@
-import { mkdir, writeFile } from "node:fs/promises";
+// @ts-nocheck
+import { mkdir, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import cloudinary from "cloudinary";
 
 const outputPath = path.join(process.cwd(), "public", "photos-manifest.json");
+const photosDir = path.join(process.cwd(), "public", "photo");
+const supportedExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".avif"]);
+
+async function walk(dir) {
+  let entries;
+  try {
+    entries = await readdir(dir, { withFileTypes: true });
+  } catch (error) {
+    if (error && error.code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
+
+  const files = await Promise.all(
+    entries.map((entry) => {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        return walk(fullPath);
+      }
+      return [fullPath];
+    }),
+  );
+
+  return files.flat();
+}
 
 async function writeManifest(images) {
   await mkdir(path.dirname(outputPath), { recursive: true });
@@ -11,39 +37,22 @@ async function writeManifest(images) {
 }
 
 async function main() {
-  const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const apiKey = process.env.CLOUDINARY_API_KEY;
-  const apiSecret = process.env.CLOUDINARY_API_SECRET;
-  const folder = process.env.CLOUDINARY_FOLDER;
+  const allFiles = await walk(photosDir);
 
-  if (!cloudName || !apiKey || !apiSecret || !folder) {
-    console.warn(
-      "Missing Cloudinary env vars. Writing an empty manifest. Required: NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, CLOUDINARY_FOLDER.",
-    );
-    await writeManifest([]);
-    return;
-  }
+  const imageFiles = allFiles
+    .filter((filePath) => supportedExtensions.has(path.extname(filePath).toLowerCase()))
+    .sort((a, b) => a.localeCompare(b));
 
-  cloudinary.v2.config({
-    cloud_name: cloudName,
-    api_key: apiKey,
-    api_secret: apiSecret,
-    secure: true,
+  const manifest = imageFiles.map((filePath, id) => {
+    const relativePath = path.relative(path.join(process.cwd(), "public"), filePath);
+    return {
+      id,
+      name: path.basename(filePath),
+      src: `/${relativePath.split(path.sep).join("/")}`,
+      width: 0,
+      height: 0,
+    };
   });
-
-  const results = await cloudinary.v2.search
-    .expression(`folder:${folder}/*`)
-    .sort_by("public_id", "desc")
-    .max_results(400)
-    .execute();
-
-  const manifest = results.resources.map((result, id) => ({
-    id,
-    height: result.height,
-    width: result.width,
-    public_id: result.public_id,
-    format: result.format,
-  }));
 
   await writeManifest(manifest);
 }
