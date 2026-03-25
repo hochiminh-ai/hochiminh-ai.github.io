@@ -49,24 +49,17 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             }}
           />
         )}
-        <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
-          <div className="after:content relative w-full mb-5 flex h-[629px] flex-col items-center justify-end gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-0">
-            {/* <div className="absolute inset-0 flex items-center justify-center opacity-20">
-              <span className="flex max-h-full max-w-full items-center justify-center">
-                <Bridge />
-              </span>
-              <span className="absolute left-0 right-0 bottom-0 h-[400px] bg-gradient-to-b from-black/0 via-black to-black"></span>
-            </div> */}
-            <div className="flex w-[50%] max-w-[40ch] items-center justify-center">
+        <div className="after:content relative w-full mb-5 flex flex-col items-center justify-end gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-8 pt-40 text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-6">
+            <div className="flex w-64 max-w-[40ch] items-center justify-center">
               <Logo />
             </div>
-            <h1 className="mt-8 mb-4 text-base font-bold tracking-widest">
+            <h1 className="mt-8 text-2xl font-bold tracking-widest">
               Chủ tịch Hồ Chí Minh
             </h1>
-            <h3>
+            <h3 className="font-semibold">
               AI Enhance Photo Gallery
             </h3>
-            <p className="max-w-[40ch] text-white/75 sm:max-w-[32ch]">
+            <p className="max-w-[60ch] text-white/75 sm:max-w-[40ch]">
               Tấm gương rạng ngời dân tộc, sự kết hợp giữa khôn khéo chiến lược và đạo đức bền vững qua nhiều thập kỷ thử thách là minh chứng cho tài năng mọi thời đại.
             </p>
             {/* <a
@@ -77,6 +70,8 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               Clone and Deploy
             </a> */}
           </div>
+        <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
+          
           {images.map(({ id, public_id, format, blurDataUrl }) => (
             <Link
               key={id}
@@ -105,34 +100,26 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         </div>
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">
-        Thank you to{" "}
+        {/* Thank you to{" "} */}
         <a
-          href="https://edelsonphotography.com/"
+          href="https://hochiminh-ai.github.io"
           target="_blank"
-          className="font-semibold hover:text-white"
+          className="underline"
           rel="noreferrer"
         >
-          Josh Edelson
+          hochiminh-ai.github.io
         </a>
-        ,{" "}
-        <a
-          href="https://www.newrevmedia.com/"
-          target="_blank"
-          className="font-semibold hover:text-white"
-          rel="noreferrer"
-        >
-          Jenny Morgan
-        </a>
-        , and{" "}
-        <a
-          href="https://www.garysextonphotography.com/"
-          target="_blank"
-          className="font-semibold hover:text-white"
-          rel="noreferrer"
-        >
-          Gary Sexton
-        </a>{" "}
-        for the pictures.
+        <div className="flex items-center justify-center gap-2">
+          <a
+            href="https://www.linkedin.com/company/openhuman"
+            target="_blank"
+            className="font-semibold hover:text-white"
+            rel="noreferrer"
+          >
+            OpenHuman ©
+          </a>
+          {' '}for the AI photo.
+        </div>
       </footer>
     </>
   );
