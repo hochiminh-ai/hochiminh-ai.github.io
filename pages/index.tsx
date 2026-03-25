@@ -59,7 +59,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             </div>
             <Logo />
             <h1 className="mt-8 mb-4 text-base font-bold uppercase tracking-widest">
-              2022 Event Photos
+              Ho Chi Minh AI Enhance Photo Gallery
             </h1>
             <p className="max-w-[40ch] text-white/75 sm:max-w-[32ch]">
               Our incredible Next.js community got together in San Francisco for
