@@ -58,12 +58,12 @@ const Home: NextPage<{ images: ImageProps[] }> = ({ images }) => {
             <h3 className="font-semibold">
               AI Enhance Photo Gallery
             </h3>
-            <Link
+            {/* <Link
               href="/compare"
               className="z-10 mt-2 rounded-lg border border-white/70 px-3 py-2 text-sm font-semibold transition hover:bg-white hover:text-black"
             >
               Compare Black & White vs Colorized
-            </Link>
+            </Link> */}
             <p className="max-w-[60ch] text-white/75 sm:max-w-[40ch]">
               Tấm gương rạng ngời dân tộc, sự kết hợp giữa khôn khéo chiến lược và đạo đức bền vững qua nhiều thập kỷ thử thách là minh chứng cho tài năng mọi thời đại.
             </p>

@@ -1,6 +1,8 @@
 import Head from "next/head";
+import Image from "next/image";
 import Link from "next/link";
 import type { NextPage } from "next";
+import Zoom from "react-medium-image-zoom";
 import ImageCompareSlider from "../components/ImageCompareSlider";
 
 const ComparePage: NextPage = () => {
@@ -28,6 +30,22 @@ const ComparePage: NextPage = () => {
             beforeLabel="Black & White"
             afterLabel="Colorized"
           />
+
+          <section className="mt-8 border-t border-white/15 pt-6">
+            <h2 className="mb-3 text-lg font-semibold text-white">Black & White Viewer</h2>
+            <p className="mb-4 text-sm text-white/70">Click the image to zoom in full detail.</p>
+            <div className="mx-auto w-fit max-w-full overflow-hidden rounded-2xl border border-white/20 bg-black/30 shadow-highlight">
+              <Zoom>
+                <Image
+                  src="/photo/Image_v5wppev5wppev5wp_blackwhite.png"
+                  alt="Black and white Ho Chi Minh portrait"
+                  width={1400}
+                  height={900}
+                  className="h-auto max-h-[75vh] w-auto max-w-full object-contain"
+                />
+              </Zoom>
+            </div>
+          </section>
         </div>
       </main>
     </>
