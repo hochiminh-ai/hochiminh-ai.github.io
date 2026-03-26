@@ -8,8 +8,6 @@ import { variants } from "../utils/animationVariants";
 import type { SharedModalProps } from "../utils/types";
 import Twitter from "./Icons/Twitter";
 
-const SAMPLE_BLACK_WHITE_SRC = "/photo/old/Image_v5wppev5wppev5wp.png";
-
 export default function SharedModal({
     index,
     images,
@@ -23,6 +21,8 @@ export default function SharedModal({
     if (!currentImage) {
         return null;
     }
+
+    const blackWhiteSrc = `/photo/old/${currentImage.name}`;
 
     const currentImageWidth = Number(currentImage.width) > 0 ? Number(currentImage.width) : 1920;
     const currentImageHeight = Number(currentImage.height) > 0 ? Number(currentImage.height) : 1280;
@@ -45,7 +45,7 @@ export default function SharedModal({
                     <div className="flex h-screen w-full items-center justify-center">
                         <div className="w-full max-w-6xl">
                             <ImageCompareSlider
-                                beforeImageSrc={SAMPLE_BLACK_WHITE_SRC}
+                                beforeImageSrc={blackWhiteSrc}
                                 afterImageSrc={currentImage.src}
                                 beforeLabel="Black & White"
                                 afterLabel="Colorized"
@@ -86,7 +86,7 @@ export default function SharedModal({
                     <div className="absolute left-0 top-0 flex items-center gap-2 p-3 text-white">
                         <button
                             onClick={() => setIsCompareMode((prev) => !prev)}
-                            className="pointer-events-auto rounded-full bg-black/50 px-3 py-2 text-xs font-semibold text-white/85 backdrop-blur-lg transition hover:bg-black/75 hover:text-white cursor-pointer"
+                            className="pointer-events-auto rounded-full bg-black/50 px-3 py-2 text-xs font-semibold border border-white/70 text-white/85 backdrop-blur-lg transition hover:bg-black/75 hover:text-white cursor-pointer"
                             title={isCompareMode ? "Show single image" : "Compare black-white and colorized"}
                             aria-label={isCompareMode ? "Show single image" : "Compare black-white and colorized"}
                         >
