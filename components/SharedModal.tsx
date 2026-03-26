@@ -8,7 +8,7 @@ import { variants } from "../utils/animationVariants";
 import type { SharedModalProps } from "../utils/types";
 import Twitter from "./Icons/Twitter";
 
-const SAMPLE_BLACK_WHITE_SRC = "/photo/Image_v5wppev5wppev5wp_blackwhite.png";
+const SAMPLE_BLACK_WHITE_SRC = "/photo/old/Image_v5wppev5wppev5wp.png";
 
 export default function SharedModal({
     index,

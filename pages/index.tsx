@@ -76,7 +76,7 @@ const Home: NextPage<{ images: ImageProps[] }> = ({ images }) => {
             </a> */}
           </div>
         {images.length === 0 && (
-          <div className="my-16 text-center text-white/70">No images found in /public/photo.</div>
+          <div className="my-16 text-center text-white/70">No images found in /public/photo/colorize.</div>
         )}
 
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">

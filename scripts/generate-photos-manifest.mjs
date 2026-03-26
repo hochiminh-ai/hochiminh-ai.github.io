@@ -3,32 +3,8 @@ import { mkdir, readdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const outputPath = path.join(process.cwd(), "public", "photos-manifest.json");
-const photosDir = path.join(process.cwd(), "public", "photo");
+const photosDir = path.join(process.cwd(), "public", "photo", "colorize");
 const supportedExtensions = new Set([".png", ".jpg", ".jpeg", ".webp", ".avif"]);
-
-async function walk(dir) {
-  let entries;
-  try {
-    entries = await readdir(dir, { withFileTypes: true });
-  } catch (error) {
-    if (error && error.code === "ENOENT") {
-      return [];
-    }
-    throw error;
-  }
-
-  const files = await Promise.all(
-    entries.map((entry) => {
-      const fullPath = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        return walk(fullPath);
-      }
-      return [fullPath];
-    }),
-  );
-
-  return files.flat();
-}
 
 async function writeManifest(images) {
   await mkdir(path.dirname(outputPath), { recursive: true });
@@ -37,10 +13,24 @@ async function writeManifest(images) {
 }
 
 async function main() {
-  const allFiles = await walk(photosDir);
+  let entries;
+  try {
+    entries = await readdir(photosDir, { withFileTypes: true });
+  } catch (error) {
+    if (error && error.code === "ENOENT") {
+      await writeManifest([]);
+      return;
+    }
+    throw error;
+  }
 
-  const imageFiles = allFiles
-    .filter((filePath) => supportedExtensions.has(path.extname(filePath).toLowerCase()))
+  const imageFiles = entries
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        supportedExtensions.has(path.extname(entry.name).toLowerCase()),
+    )
+    .map((entry) => path.join(photosDir, entry.name))
     .sort((a, b) => a.localeCompare(b));
 
   const manifest = imageFiles.map((filePath, id) => {
