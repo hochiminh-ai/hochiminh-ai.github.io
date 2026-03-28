@@ -5,6 +5,8 @@ const publicDir = path.join(process.cwd(), "public");
 const manifestPath = path.join(publicDir, "photos-manifest.json");
 const sitemapPath = path.join(publicDir, "sitemap.xml");
 const mediaSitemapPath = path.join(publicDir, "sitemap-media.xml");
+const sitemapIndexPath = path.join(publicDir, "sitemap-index.xml");
+const robotsPath = path.join(publicDir, "robots.txt");
 const siteUrl = (process.env.SITE_URL || "https://hochiminh-ai.pages.dev").replace(/\/$/, "");
 
 const photoLabelStart = 100;
@@ -89,6 +91,36 @@ function buildSitemapXml(entries, options = {}) {
   ].join("\n");
 }
 
+/**
+ * @param {string[]} sitemapUrls
+ */
+function buildSitemapIndexXml(sitemapUrls) {
+  const entries = sitemapUrls.map((url) => {
+    return ["  <sitemap>", `    <loc>${escapeXml(url)}</loc>`, "  </sitemap>"].join("\n");
+  });
+
+  return [
+    '<?xml version="1.0" encoding="UTF-8"?>',
+    '<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+    ...entries,
+    "</sitemapindex>",
+    "",
+  ].join("\n");
+}
+
+/**
+ * @param {string[]} sitemapUrls
+ */
+function buildRobotsTxt(sitemapUrls) {
+  return [
+    "User-agent: *",
+    "Allow: /",
+    "",
+    ...sitemapUrls.map((url) => `Sitemap: ${url}`),
+    "",
+  ].join("\n");
+}
+
 async function readManifest() {
   try {
     const fileContent = await readFile(manifestPath, "utf8");
@@ -152,17 +184,27 @@ async function main() {
 
   const pageSitemapXml = buildSitemapXml(pageEntries);
   const mediaSitemapXml = buildSitemapXml(mediaEntries, { includeImageNamespace: true });
+  const sitemapUrls = [
+    toAbsoluteUrl("/sitemap.xml"),
+    toAbsoluteUrl("/sitemap-media.xml"),
+  ];
+  const sitemapIndexXml = buildSitemapIndexXml(sitemapUrls);
+  const robotsTxt = buildRobotsTxt([toAbsoluteUrl("/sitemap-index.xml"), ...sitemapUrls]);
 
   await mkdir(path.dirname(sitemapPath), { recursive: true });
   await Promise.all([
     writeFile(sitemapPath, pageSitemapXml, "utf8"),
     writeFile(mediaSitemapPath, mediaSitemapXml, "utf8"),
+    writeFile(sitemapIndexPath, sitemapIndexXml, "utf8"),
+    writeFile(robotsPath, robotsTxt, "utf8"),
   ]);
 
   console.log(`Wrote page sitemap with ${pageEntries.length} URL entries to ${sitemapPath}`);
   console.log(
     `Wrote media sitemap with ${mediaEntries.length} URL entries to ${mediaSitemapPath}`,
   );
+  console.log(`Wrote sitemap index to ${sitemapIndexPath}`);
+  console.log(`Wrote robots.txt to ${robotsPath}`);
 }
 
 main().catch(async (error) => {
@@ -170,11 +212,22 @@ main().catch(async (error) => {
 
   const fallbackPageXml = buildSitemapXml([buildPageUrlEntry(toAbsoluteUrl("/"))]);
   const fallbackMediaXml = buildSitemapXml([], { includeImageNamespace: true });
+  const fallbackSitemapUrls = [
+    toAbsoluteUrl("/sitemap.xml"),
+    toAbsoluteUrl("/sitemap-media.xml"),
+  ];
+  const fallbackSitemapIndexXml = buildSitemapIndexXml(fallbackSitemapUrls);
+  const fallbackRobotsTxt = buildRobotsTxt([
+    toAbsoluteUrl("/sitemap-index.xml"),
+    ...fallbackSitemapUrls,
+  ]);
 
   await mkdir(path.dirname(sitemapPath), { recursive: true });
   await Promise.all([
     writeFile(sitemapPath, fallbackPageXml, "utf8"),
     writeFile(mediaSitemapPath, fallbackMediaXml, "utf8"),
+    writeFile(sitemapIndexPath, fallbackSitemapIndexXml, "utf8"),
+    writeFile(robotsPath, fallbackRobotsTxt, "utf8"),
   ]);
   process.exitCode = 1;
 });

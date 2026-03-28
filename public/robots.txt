@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hochiminh-ai.pages.dev/sitemap-index.xml
+Sitemap: https://hochiminh-ai.pages.dev/sitemap.xml
+Sitemap: https://hochiminh-ai.pages.dev/sitemap-media.xml
