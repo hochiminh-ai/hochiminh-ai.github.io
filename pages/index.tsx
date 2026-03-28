@@ -106,14 +106,14 @@ const Home: NextPage<{ images: ImageProps[] }> = ({ images }) => {
         </div>
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">
-        {/* Thank you to{" "} */}
+        Source code{" "}
         <a
-          href="https://hochiminh-ai.github.io"
+          href="https://github.com/hochiminh-ai/hochiminh-ai.github.io"
           target="_blank"
           className="underline"
           rel="noreferrer"
         >
-          hochiminh-ai.github.io
+          github.com/hochiminh-ai/hochiminh-ai.github.io
         </a>
         <div className="flex items-center justify-center gap-2">
           <a
