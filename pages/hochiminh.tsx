@@ -28,7 +28,7 @@ const HoChiMinhPage: NextPage<HoChiMinhPageProps> = ({ images }) => {
             </Link>
           </div>
           <p className="mt-2 text-sm text-white/75">
-            All photos are displayed one by one in a vertical stack.
+            All photos are displayed one by one in a vertical stack. Total: {images.length} images.
           </p>
         </section>
 
