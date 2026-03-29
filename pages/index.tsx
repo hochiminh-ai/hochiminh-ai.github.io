@@ -4,19 +4,26 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Logo from "../components/Icons/Logo";
 import Modal from "../components/Modal";
 import { readPhotosManifest } from "../utils/photosManifest";
 import type { ImageProps } from "../utils/types";
 import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
 
+const INITIAL_VISIBLE_IMAGES = 40;
+const IMAGE_BATCH_SIZE = 40;
+
 const Home: NextPage<{ images: ImageProps[] }> = ({ images }) => {
   const router = useRouter();
   const { photoId } = router.query;
   const [lastViewedPhoto, setLastViewedPhoto] = useLastViewedPhoto();
+  const [visibleCount, setVisibleCount] = useState(() =>
+    Math.min(INITIAL_VISIBLE_IMAGES, images.length),
+  );
 
   const lastViewedPhotoRef = useRef<HTMLAnchorElement>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
@@ -25,6 +32,34 @@ const Home: NextPage<{ images: ImageProps[] }> = ({ images }) => {
       setLastViewedPhoto(null);
     }
   }, [photoId, lastViewedPhoto, setLastViewedPhoto]);
+
+  useEffect(() => {
+    if (visibleCount >= images.length) {
+      return;
+    }
+
+    const target = loadMoreRef.current;
+    if (!target) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry?.isIntersecting) {
+          setVisibleCount((previous) => Math.min(previous + IMAGE_BATCH_SIZE, images.length));
+        }
+      },
+      {
+        rootMargin: "600px 0px",
+      },
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [visibleCount, images.length]);
+
+  const visibleImages = images.slice(0, visibleCount);
 
   return (
     <>
@@ -86,7 +121,7 @@ const Home: NextPage<{ images: ImageProps[] }> = ({ images }) => {
         )}
 
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
-          {images.map(({ id, src }) => (
+          {visibleImages.map(({ id, src }) => (
             <Link
               key={id}
               href={`/?photoId=${id}`}
@@ -102,6 +137,7 @@ const Home: NextPage<{ images: ImageProps[] }> = ({ images }) => {
                 src={src}
                 width={720}
                 height={480}
+                loading="lazy"
                 sizes="(max-width: 640px) 100vw,
                   (max-width: 1280px) 50vw,
                   (max-width: 1536px) 33vw,
@@ -110,6 +146,14 @@ const Home: NextPage<{ images: ImageProps[] }> = ({ images }) => {
             </Link>
           ))}
         </div>
+        {visibleCount < images.length && (
+          <div
+            ref={loadMoreRef}
+            className="my-8 rounded-lg border border-white/15 bg-white/5 p-4 text-center text-sm text-white/65"
+          >
+            Loading more photos...
+          </div>
+        )}
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">
         Source code{" "}
